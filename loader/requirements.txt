@@ -1,0 +1,12 @@
+beautifulsoup4==4.13.3
+certifi==2025.1.31
+charset-normalizer==3.4.1
+html2text==2024.2.26
+idna==3.10
+langchain_community==0.3.20
+langchain_core==0.3.49
+requests==2.32.3
+soupsieve==2.6
+typing==3.7.4
+typing_extensions==4.13.0
+urllib3==2.3.0
