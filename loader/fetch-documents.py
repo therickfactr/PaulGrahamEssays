@@ -1,10 +1,13 @@
 import json
 
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
 from html2text import HTML2Text
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_core.documents import Document
 from typing import Generator, Iterator, List
+
+load_dotenv()
 
 def fetch_documents(urls: List[tuple[str, str]] | Iterator[tuple[str, str]]) -> Generator[Document, None, None]:
     """
