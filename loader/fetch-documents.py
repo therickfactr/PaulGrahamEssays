@@ -1,3 +1,5 @@
+import json
+
 from bs4 import BeautifulSoup
 from html2text import HTML2Text
 from langchain_community.document_loaders import WebBaseLoader
@@ -44,5 +46,5 @@ if __name__ == "__main__":
     ]
     n = 0
     for document in fetch_documents(urls):
-        print(f"{n}: {document.metadata['title']}")
+        print(f"{n}: {json.dumps(document.__dict__)}")
         n += 1
