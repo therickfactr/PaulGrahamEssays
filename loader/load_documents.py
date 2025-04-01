@@ -8,6 +8,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from os import environ
 from supabase.client import create_client
+from tqdm import tqdm
 from typing import Iterator, List
 
 load_dotenv()
@@ -21,6 +22,9 @@ text_converter.ignore_images = True
 text_converter.ignore_emphasis = True
 
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+
+document_count = 0
+chunk_count = 0
 
 def get_document_list(url: str) -> Iterator[str]:
     """
@@ -41,23 +45,25 @@ def get_document_list(url: str) -> Iterator[str]:
         soup = BeautifulSoup(response.text, 'html.parser')
 
         # Find all anchor tags and remove duplicates
-        anchor_tags = set(soup.find_all('a'))
+        anchor_tags = (tag for tag in set(soup.find_all('a')) if tag['href'] and tag['href'] not in ['index.html', 'rss.html'])
 
         for anchor in anchor_tags:
             href = anchor.get('href')
-            if not href or href in ['index.html', 'rss.html']:
-                continue
             yield requests.compat.urljoin(base_url, href)
 
     except Exception as e:
         print(f"{get_document_list.__name__}: Error parsing index page: {e}")
         raise
 
-def store_documents(urls: List[str] | Iterator[str]) -> SupabaseVectorStore:
+def store_documents(urls: List[str] | Iterator[str]):
     """
     Generator that fetches documents from the given URLs and returns them as
     LangChain Document objects.
     """
+    # Initialize global variables
+    global document_count
+    global chunk_count
+
     try:
         # Initialize OpenAI embeddings
         openai_embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
@@ -72,36 +78,50 @@ def store_documents(urls: List[str] | Iterator[str]) -> SupabaseVectorStore:
             "match_documents",
         )
 
-        for url in urls:
-            # Load document content
-            loader = WebBaseLoader(web_path=url, )
-            documents = []
-            for document in loader.load_and_split(text_splitter):
-                documents.append(document)
+        # Convert iterator to list if it is an iterator
+        if isinstance(urls, Iterator):
+            urls = list(urls)
+    
+        # Initialize loader
+        loader = WebBaseLoader(web_paths=urls)
 
-            vector_store.add_documents(documents)
+        # Initialize text splitter
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 
-        return vector_store
+        # Create a progress bar
+        progress_bar = tqdm(loader.load(), total=len(urls), desc="Processing documents")
+
+        # Iterate over documents
+        for document in progress_bar:
+            # Increment the document count
+            document_count += 1
+
+            # split document into chunks
+            chunks = []
+            for chunk in text_splitter.split_documents([document]):
+                # Increment the chunk count
+                chunk_count += 1
+
+                # Add chunk to documents
+                chunks.append(chunk)
+
+            # Add chunks to vector store
+            vector_store.add_documents(chunks)
 
     except Exception as e:
-        print(f"{store_documents.__name__}: Error storing documents {url}: {e}")
+        print(f"{store_documents.__name__}: Error storing documents: {e}")
         raise
 
-if __name__ == "__main__":
-    # Example usage
-    urls = []
-
+def main():
+    # Check if DOCUMENT_LIST_URL is set
     if not environ.get("DOCUMENT_LIST_URL"):
+        raise ValueError("DOCUMENT_URL is not set")
 
-    
-        urls = get_document_list(environ.get("DOCUMENT_LIST_URL"))
-    else:
-        urls = [
-            ["https://www.paulgraham.com/fix.html", "fix it"],
-            ["https://www.paulgraham.com/greatwork.html", "great work"],
-            ["https://www.paulgraham.com/goodwork.html", "good work"],
-        ]
+    urls = get_document_list(environ.get("DOCUMENT_LIST_URL"))
+    store_documents(urls)
 
-    vector_store = store_documents(urls)
+    # Print the results
+    print("Sucesfully stored {:,} documents and {:,} chunks".format(document_count, chunk_count))
 
-    print(f"Vector store: {vector_store}")
+if __name__ == "__main__":
+    main()
