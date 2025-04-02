@@ -1,7 +1,0 @@
-{
-  "name": "PaulGrahamEssays",
-  "packageManager": "yarn@4.8.1",
-  "devDependencies": {
-    "supabase": "2.20.5"
-  }
-}

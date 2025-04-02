@@ -61,7 +61,11 @@ def get_document_list(url: str) -> Iterator[str]:
         soup = BeautifulSoup(response.text, 'html.parser')
 
         # Find all anchor tags and remove duplicates
-        anchor_tags = (tag for tag in set(soup.find_all('a')) if tag['href'] and tag['href'] not in ['index.html', 'rss.html'])
+        anchor_tags = (
+            tag for tag in set(soup.find_all('a')) 
+            if  tag['href']
+            and tag['href'] not in ['index.html', 'rss.html']
+        )
 
         for anchor in anchor_tags:
             href = anchor.get('href')

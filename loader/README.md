@@ -29,12 +29,17 @@ A Python script that scrapes Paul Graham's essays from his website, processes th
    .venv\Scripts\activate  # On Windows
    ```
 
-2. Install dependencies:
+2. Install Python dependencies:
    ```bash
    pip install -r requirements.txt
    ```
 
-3. Create a `.env` file in the root directory with the following variables:
+3. Install Node.js dependencies:
+   ```bash
+   npm install
+   ```
+
+4. Create a `.env` file in the root directory with the following variables:
    ```
    DOCUMENT_LIST_URL=http://www.paulgraham.com/articles.html
    OPENAI_MODEL=text-embedding-3-small
@@ -72,6 +77,7 @@ The following environment variables can be configured:
 
 ## Dependencies
 
+### Python Dependencies
 - beautifulsoup4: HTML parsing
 - html2text: HTML to text conversion
 - langchain-community: Vector store integration
