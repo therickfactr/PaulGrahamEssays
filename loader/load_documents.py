@@ -13,6 +13,22 @@ from typing import Iterator, List
 
 load_dotenv()
 
+DOCUMENT_LIST_URL = environ.get("DOCUMENT_LIST_URL")
+if not DOCUMENT_LIST_URL:
+    raise ValueError("DOCUMENT_URL is not set")
+
+OPENAI_MODEL = environ.get("OPENAI_MODEL")
+if not OPENAI_MODEL:
+    raise ValueError("OPENAI_MODEL is not set")
+
+SUPABASE_URL = environ.get("SUPABASE_URL")
+if not SUPABASE_URL:
+    raise ValueError("SUPABASE_URL is not set")
+
+SUPABASE_KEY = environ.get("SUPABASE_KEY")
+if not SUPABASE_KEY:
+    raise ValueError("SUPABASE_KEY is not set")
+
 from langchain_community.document_loaders import WebBaseLoader
 
     # Initialize HTML to text converter
@@ -66,13 +82,13 @@ def store_documents(urls: List[str] | Iterator[str]):
 
     try:
         # Initialize OpenAI embeddings
-        openai_embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+        openai_model = OpenAIEmbeddings(model=OPENAI_MODEL)
 
         # Initialize Supabase client
-        supabase_client = create_client(environ.get("SUPABASE_URL"), environ.get("SUPABASE_SERVICE_KEY"))
+        supabase_client = create_client(SUPABASE_URL, SUPABASE_KEY)
         vector_store = SupabaseVectorStore(
             supabase_client,
-            openai_embeddings,
+            openai_model,
             "documents",
             1000,
             "match_documents",
@@ -113,11 +129,7 @@ def store_documents(urls: List[str] | Iterator[str]):
         raise
 
 def main():
-    # Check if DOCUMENT_LIST_URL is set
-    if not environ.get("DOCUMENT_LIST_URL"):
-        raise ValueError("DOCUMENT_URL is not set")
-
-    urls = get_document_list(environ.get("DOCUMENT_LIST_URL"))
+    urls = get_document_list(DOCUMENT_LIST_URL)
     store_documents(urls)
 
     # Print the results
