@@ -1,0 +1,22 @@
+{
+    // Font settings
+    "editor.fontFamily": "'Fira Code', 'Menlo', 'Monaco', 'Courier New', monospace",
+    "editor.fontSize": 14,
+    "editor.fontWeight": "normal",
+    "editor.fontLigatures": true,
+    "editor.letterSpacing": 0.5,
+    "editor.lineHeight": 1.6,
+    
+    // Terminal font settings
+    "terminal.integrated.fontFamily": "'Fira Code', 'Menlo', 'Monaco', 'Courier New', monospace",
+    "terminal.integrated.fontSize": 14,
+    "terminal.integrated.lineHeight": 1.6,
+    
+    // Additional editor settings for better readability
+    "editor.renderWhitespace": "selection",
+    "editor.cursorBlinking": "smooth",
+    "editor.cursorSmoothCaretAnimation": "on",
+    "editor.smoothScrolling": true,
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": true
+} 
