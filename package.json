@@ -1,0 +1,26 @@
+{
+  "name": "paul-graham-essays",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build:shared": "yarn workspace @paul-graham-essays/shared build",
+    "dev:api": "yarn build:shared && yarn workspace @paul-graham-essays/api dev",
+    "dev:explorer": "yarn workspace @paul-graham-essays/explorer dev",
+    "build:api": "yarn build:shared && yarn workspace @paul-graham-essays/api build",
+    "build:explorer": "yarn workspace @paul-graham-essays/explorer build",
+    "start:api": "yarn workspace @paul-graham-essays/api start",
+    "start:explorer": "yarn workspace @paul-graham-essays/explorer start",
+    "lint": "yarn workspaces run lint",
+    "test": "yarn workspaces run test",
+    "install": "yarn build:shared"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "prettier": "^3.0.0",
+    "eslint": "^8.0.0"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}

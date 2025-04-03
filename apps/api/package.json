@@ -1,0 +1,35 @@
+{
+  "name": "@paul-graham-essays/api",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "yarn@1.22.22",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only --rs --watch 'src/**/*.ts*, src/**/*.y*ml, .env' src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint . --ext .ts",
+    "generate-client": "openapi-generator-cli generate -i src/openapi.yaml -g typescript-axios -o ../web/src/api-client"
+  },
+  "dependencies": {
+    "@langchain/community": "0.3.39",
+    "@langchain/core": "^0.3.39",
+    "@langchain/openai": "0.5.2",
+    "@paul-graham-essays/shared": "0.1.0",
+    "@supabase/supabase-js": "^2.39.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.0",
+    "langchain": "0.3.19"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.7.0",
+    "@types/cors": "^2.8.0",
+    "@types/express": "^4.17.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.0.0"
+  }
+}

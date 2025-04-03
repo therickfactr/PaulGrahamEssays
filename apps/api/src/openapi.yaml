@@ -1,0 +1,292 @@
+openapi: 3.0.0
+info:
+  title: Paul Graham Essays API
+  version: 1.0.0
+  description: API for managing Paul Graham essays and chat interactions
+
+servers:
+  - url: http://localhost:3001
+    description: Local development server
+
+components:
+  schemas:
+    DocumentMetadata:
+      type: object
+      properties:
+        source:
+          type: string
+          description: Source of the document
+          example: "https://paulgraham.com/greatwork.html"
+        title:
+          type: string
+          description: Title of the document
+          example: "Great Work"
+        language:
+          type: string
+          description: Language of the document
+          example: "en"
+        author:
+          type: string
+          description: Author of the document
+          example: "Paul Graham"
+        summary:
+          type: string
+          description: Summary of the document
+          example: "This is a summary of the document"
+          
+    DocumentFields:
+      type: object
+      properties:
+        content:
+          type: string
+          description: Content of the document
+          example: "This is the content of the document"
+        metadata:
+          type: object
+          $ref: '#/components/schemas/DocumentMetadata'
+          description: Metadata of the document
+          example: |-
+            { "source": "https://paulgraham.com/greatwork.html", "title": "Great Work", "language": "en", "author": "Paul Graham", "summary": "This is a summary of the document" }
+        required:
+          - content
+
+    Document:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the document
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        content:
+          type: string
+          description: Content of the document
+          example: "This is the content of the document"
+        metadata:
+          type: object
+          $ref: '#/components/schemas/DocumentMetadata'
+          description: Metadata of the document
+          example: |-
+            { "source": "https://paulgraham.com/greatwork.html", "title": "Great Work", "language": "en", "author": "Paul Graham", "summary": "This is a summary of the document" }
+        embedding:
+          type: array
+          items:
+            type: number
+          description: Embedding of the document
+          example: '[0.1, 0.2, 0.3]'
+          required: false
+        created_at:
+          type: string
+          format: date-time
+          description: Created at date of the document
+          example: "2021-01-01T00:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: Updated at date of the document
+          example: "2021-01-01T00:00:00Z"
+      required:
+        - content
+
+    DocumentCreate:
+      type: object
+      properties:
+        content:
+          type: string
+          description: Content of the document
+          example: "This is the content of the document"
+        metadata:
+          type: object
+          $ref: '#/components/schemas/DocumentMetadata'
+      required:
+        - content
+
+    DocumentUpdate:
+      type: object
+      properties:
+        content:
+          type: string
+          description: Content of the document
+          example: "This is the content of the document"
+        metadata:
+          type: object
+          $ref: '#/components/schemas/DocumentMetadata'
+          description: Metadata of the document
+
+    ChatRequest:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    ChatResponse:
+      type: object
+      properties:
+        response:
+          type: string
+
+    MatchRequest:
+      type: object
+      properties:
+        query:
+          type: string
+        limit:
+          type: integer
+          default: 5
+      required:
+        - query
+
+    MatchResponse:
+      type: object
+      properties:
+        matches:
+          type: array
+          items:
+            $ref: '#/components/schemas/Document'
+
+paths:
+  /api/health:
+    get:
+      summary: Health check
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Health check response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                timestamp:
+                  type: string
+                  format: date-time
+      
+  /api/documents:
+    get:
+      summary: List all documents
+      operationId: listDocuments
+      responses:
+        '200':
+          description: List of documents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+    
+    post:
+      summary: Create a new document
+      operationId: createDocument
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentCreate'
+      responses:
+        '201':
+          description: Document created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+
+  /api/documents/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Document ID
+    
+    get:
+      summary: Get a document by ID
+      operationId: getDocument
+      responses:
+        '200':
+          description: Document details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+        '404':
+          description: Document not found
+    
+    put:
+      summary: Update a document
+      operationId: updateDocument
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentUpdate'
+      responses:
+        '200':
+          description: Document updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+        '404':
+          description: Document not found
+    
+    delete:
+      summary: Delete a document
+      operationId: deleteDocument
+      responses:
+        '204':
+          description: Document deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+        '404':
+          description: Document not found
+
+  /api/documents/match:
+    post:
+      summary: Find matching documents
+      operationId: matchDocuments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MatchRequest'
+      responses:
+        '200':
+          description: Matching documents
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MatchResponse'
+
+  /api/chat:
+    post:
+      summary: Chat with the AI about documents
+      operationId: chat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+      responses:
+        '200':
+          description: Chat response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse' 
