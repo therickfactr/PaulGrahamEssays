@@ -1,3 +1,4 @@
+import json
 import requests
 
 from bs4 import BeautifulSoup
@@ -9,7 +10,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from os import environ
 from supabase.client import create_client
 from tqdm import tqdm
-from typing import Iterator, List
+from typing import Iterator, List, Dict
 
 load_dotenv()
 
@@ -42,7 +43,7 @@ text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=20
 document_count = 0
 chunk_count = 0
 
-def get_document_list(url: str) -> Iterator[str]:
+def get_essay_list(url: str) -> Iterator[Dict[str, str]]:
     """
     Generator that returns the URL of every document linked in an
     <a href=... /> tag on the Web page at {url}.
@@ -69,13 +70,14 @@ def get_document_list(url: str) -> Iterator[str]:
 
         for anchor in anchor_tags:
             href = anchor.get('href')
-            yield requests.compat.urljoin(base_url, href)
+            title = anchor.text
+            yield { "url": requests.compat.urljoin(base_url, href), "title": title}
 
     except Exception as e:
-        print(f"{get_document_list.__name__}: Error parsing index page: {e}")
+        print(f"{get_essay_list.__name__}: Error parsing index page: {e}")
         raise
 
-def store_documents(urls: List[str] | Iterator[str]):
+def store_documents(essays: List[Dict[(str, str)]] | Iterator[Dict[(str, str)]]):
     """
     Generator that fetches documents from the given URLs and returns them as
     LangChain Document objects.
@@ -99,33 +101,57 @@ def store_documents(urls: List[str] | Iterator[str]):
         )
 
         # Convert iterator to list if it is an iterator
-        if isinstance(urls, Iterator):
-            urls = list(urls)
+        if isinstance(essays, Iterator):
+            essays = list(essays)
     
         # Initialize loader
-        loader = WebBaseLoader(web_paths=urls)
+        essay_loader = WebBaseLoader(web_paths=(essay["url"] for essay in essays))
 
         # Initialize text splitter
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 
         # Create a progress bar
-        progress_bar = tqdm(loader.load(), total=len(urls), desc="Processing documents")
+        essay_progress_bar = tqdm(essay_loader.load(), total=len(essays), desc="Processing essays")
 
         # Iterate over documents
-        for document in progress_bar:
+        for essay in essay_progress_bar:
             # Increment the document count
             document_count += 1
 
-            # save the essay content to the database
-            supabase_client.table("essays").insert({
-                "title": document.metadata["title"],
-                "url": document.metadata["source"],
-                "content": document.pageContent
-            })
+            # Get the title from the essay list. This came from the text of the original anchor tag.
+            title = [e["title"] for e in essays if e["url"] == essay.metadata["source"] and "title" in e]
+            title = title[0] if title else None
+
+            # If the title is not found, try to parse it from the HTML of the essay's page
+            if not title:
+                # Parse the HTML
+                soup = BeautifulSoup(essay.page_content, 'html.parser')
+                title = soup.find("title") if soup.find("title") else essay.metadata["title"] if "title" in essay.metadata else None
+
+            # If the title is still not found, skip the essay
+            if not title:
+                print(f"Essay will be skipped: No title found {str(essay.metadata)}" )
+                continue
+
+            essay_row = {
+                "title": title,
+                "url": essay.metadata["source"] if "source" in essay.metadata else "",
+                "content": essay.page_content if essay.page_content else ""
+            }
+            
+            # save the essay to the database
+            response = supabase_client.table("essays").insert(essay_row).execute()
+            if not response.data:
+                print(f"Failed to save essay {str(essay_row)}")
+                continue
+
+            # Update essay title if it is missing
+            if "title" not in essay.metadata:
+                essay.metadata.update({"title": title})
 
             # split document into chunks
             chunks = []
-            for chunk in text_splitter.split_documents([document]):
+            for chunk in text_splitter.split_documents([essay]):
                 # Increment the chunk count
                 chunk_count += 1
 
@@ -140,7 +166,7 @@ def store_documents(urls: List[str] | Iterator[str]):
         raise
 
 def main():
-    urls = get_document_list(DOCUMENT_LIST_URL)
+    urls = get_essay_list(DOCUMENT_LIST_URL)
     store_documents(urls)
 
     # Print the results

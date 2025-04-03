@@ -4,10 +4,13 @@ import { DocumentMatch } from '../types/document';
 if (!process.env.OPENAI_API_KEY) {
   throw new Error('Missing OpenAI API key');
 }
+if (!process.env.OPENAI_MODEL) {
+  throw new Error('Missing OpenAI model name');
+}
 
 const llm = new ChatOpenAI({
   openAIApiKey: process.env.OPENAI_API_KEY,
-  modelName: 'gpt-4-turbo-preview',
+  modelName: process.env.OPENAI_MODEL,
   temperature: 0.7,
 });
 
@@ -15,7 +18,7 @@ export async function generateResponse(query: string, documents: DocumentMatch[]
   try {
     // Create a prompt that includes the relevant documents
     const context = documents
-      .map(doc => `Title: ${doc.title}\nContent: ${doc.content}`)
+      .map(doc => `Title: ${doc.metadata['title']}\nContent: ${doc.pageContent}`)
       .join('\n\n');
 
     const prompt = `You are an AI assistant helping users explore Paul Graham's essays. 

@@ -60,7 +60,7 @@ export function ChatInterface() {
     setProgress(0);
 
     try {
-      const response = await axios.post<ChatResponse>(new URL('api/documents/match', process.env.NEXT_PUBLIC_API_URL).href, {
+      const response = await axios.post<ChatResponse>(new URL('api/documents/chat', process.env.NEXT_PUBLIC_API_URL).href, {
         query: input, 
         limit: 5,
       });
