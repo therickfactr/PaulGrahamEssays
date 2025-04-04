@@ -27,7 +27,7 @@ A modern web application that allows users to explore and interact with Paul Gra
 - Supabase Vector Store
 - LangChain
 
-### Data Processing (Loader)
+### Data Ingestion (Loader)
 - Python
 - BeautifulSoup4 for web scraping
 - OpenAI embeddings
@@ -70,7 +70,7 @@ A modern web application that allows users to explore and interact with Paul Gra
 
 - Node.js 18+
 - Yarn
-- Python 3.8+
+- Python 3.12+
 - OpenAI API key
 - Supabase account
 
@@ -93,8 +93,7 @@ A modern web application that allows users to explore and interact with Paul Gra
    ```
 
 3. Set up environment variables:
-   - Create `.env` files in both `apps/api` and `apps/explorer`
-   - Create `.env` file in `loader`
+   - Create `.env` files in `apps/api`, `apps/explorer`, and `loader`
    - See `.env.example` files for required variables
 
 4. Load the essays:
