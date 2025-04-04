@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: paul-graham-essays-api
+    env: node
+    buildCommand: cd apps/api && yarn install && yarn build
+    startCommand: cd apps/api && yarn start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+    healthCheckPath: /api/health
+    autoDeploy: true
+
+  - type: web
+    name: paul-graham-essays-explorer
+    env: node
+    buildCommand: cd apps/explorer && yarn install && yarn build
+    startCommand: cd apps/explorer && yarn start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        value: https://paul-graham-essays-api.onrender.com
+    healthCheckPath: /api/health
+    autoDeploy: true 
