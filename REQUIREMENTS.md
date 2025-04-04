@@ -2,7 +2,7 @@
 
 ## **Project Overview**
 
-Build a ligthweight Retrieval Augmented Generation (RAG) system that provides intelligent search and analysis of Paul Graham's essays from [paulgraham.com/articles.html](https://paulgraham.com/articles.html).
+Build a lightweight Retrieval Augmented Generation (RAG) system that provides intelligent search and analysis of Paul Graham's essays from [paulgraham.com/articles.html](https://paulgraham.com/articles.html).
 
 ## **Tech Stack**
 
