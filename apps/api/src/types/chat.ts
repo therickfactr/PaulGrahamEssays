@@ -1,3 +1,5 @@
+import { DocumentMatch } from './document';
+
 export interface ChatRequest {
   query: string;
 }

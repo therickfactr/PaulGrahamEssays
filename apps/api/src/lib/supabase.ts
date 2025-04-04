@@ -5,10 +5,10 @@ import { Document } from '@langchain/core/documents';
 import "dotenv/config";
 
 if (!process.env.SUPABASE_URL || !process.env.SUPABASE_KEY) {
-  throw new Error('Missing Supabase environment variables');
+  throw new Error('Missing Supabase credentials');
 }
 
-export const supabaseClient = createClient(
+export const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_KEY
 );
@@ -23,7 +23,7 @@ export const initVectorStore = async () => {
         modelName: process.env.OPENAI_EMBEDDINGS_MODEL || 'text-embedding-3-small',
       }),
       {
-        client: supabaseClient,
+        client: supabase,
         tableName: 'documents',
         queryName: 'match_documents'
       }

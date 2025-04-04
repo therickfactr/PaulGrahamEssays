@@ -1,5 +1,5 @@
 import { vectorStore } from '../lib/vectorStore';
-import { DocumentMatch } from '../types/chat';
+import { DocumentMatch } from '../types/document';
 
 export async function matchDocuments(query: string): Promise<DocumentMatch[]> {
   try {
@@ -8,9 +8,8 @@ export async function matchDocuments(query: string): Promise<DocumentMatch[]> {
     
     // Transform the results into our expected format
     return results.map(([doc, score]) => ({
-      id: doc.metadata.id,
-      title: doc.metadata.title,
-      content: doc.pageContent,
+      pageContent: doc.pageContent,
+      metadata: doc.metadata,
       similarity: score
     }));
   } catch (error) {
