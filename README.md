@@ -9,6 +9,7 @@ A modern web application that allows users to explore and interact with Paul Gra
 - 📚 Context-aware responses with source attribution
 - 🎨 Modern UI with responsive design
 - 📱 Mobile-friendly interface
+- 📥 Automated essay loading and processing
 
 ## Tech Stack
 
@@ -25,6 +26,13 @@ A modern web application that allows users to explore and interact with Paul Gra
 - OpenAI GPT-4
 - Supabase Vector Store
 - LangChain
+
+### Data Ingestion (Loader)
+- Python
+- BeautifulSoup4 for web scraping
+- OpenAI embeddings
+- Supabase integration
+- Automated essay processing pipeline
 
 ## Project Structure
 
@@ -45,6 +53,13 @@ A modern web application that allows users to explore and interact with Paul Gra
 │       │   └── lib/      # Utilities
 │       └── package.json
 │
+├── loader/               # Python-based essay processing
+│   ├── src/
+│   │   ├── loaders/     # Essay loading scripts
+│   │   ├── processors/  # Text processing utilities
+│   │   └── utils/       # Helper functions
+│   └── requirements.txt
+│
 ├── render.yaml           # Render.com deployment configuration
 └── package.json         # Root package.json for workspace
 ```
@@ -55,6 +70,7 @@ A modern web application that allows users to explore and interact with Paul Gra
 
 - Node.js 18+
 - Yarn
+- Python 3.12+
 - OpenAI API key
 - Supabase account
 
@@ -68,14 +84,25 @@ A modern web application that allows users to explore and interact with Paul Gra
 
 2. Install dependencies:
    ```bash
+   # Install Node.js dependencies
    yarn install
+
+   # Install Python dependencies
+   cd loader
+   pip install -r requirements.txt
    ```
 
 3. Set up environment variables:
-   - Create `.env` files in both `apps/api` and `apps/explorer`
+   - Create `.env` files in `apps/api`, `apps/explorer`, and `loader`
    - See `.env.example` files for required variables
 
-4. Start the development servers:
+4. Load the essays:
+   ```bash
+   cd loader
+   python src/loaders/essay_loader.py
+   ```
+
+5. Start the development servers:
    ```bash
    # Start the API server
    cd apps/api
@@ -86,9 +113,26 @@ A modern web application that allows users to explore and interact with Paul Gra
    yarn dev
    ```
 
-5. Access the applications:
+6. Access the applications:
    - API: http://localhost:3001
    - Explorer: http://localhost:3000
+
+## Data Processing
+
+The Loader is a Python-based tool that:
+
+1. Scrapes essays from paulgraham.com
+2. Processes and cleans the text
+3. Generates embeddings using OpenAI
+4. Stores essays and embeddings in Supabase
+5. Maintains metadata and relationships
+
+### Key Features
+- Automated essay discovery and loading
+- Text cleaning and normalization
+- Chunking for better search results
+- Metadata extraction and storage
+- Incremental updates for new essays
 
 ## Deployment
 
@@ -104,7 +148,8 @@ The project is configured for deployment on Render.com using the `render.yaml` f
 1. Push your code to GitHub
 2. Connect your repository to Render.com
 3. Configure environment variables in the Render dashboard
-4. Render will automatically deploy both services
+4. Run the Loader to populate the database
+5. Render will automatically deploy both services
 
 ## API Endpoints
 
