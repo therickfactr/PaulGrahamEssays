@@ -160,7 +160,7 @@ export function ChatInterface() {
   );
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)] max-h-[calc(100vh-8rem)] bg-background">
+    <div className="flex flex-col h-[calc(100vh-12rem)] max-h-[calc(100vh-12rem)] bg-background">
       <div className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-2 sm:space-y-4">
         {messages.map((message) => (
           <div
@@ -201,21 +201,23 @@ export function ChatInterface() {
         )}
         <div ref={messagesEndRef} />
       </div>
-      <form onSubmit={handleSubmit} className="p-2 sm:p-4 border-t bg-background">
-        <div className="flex space-x-2 sm:space-x-4">
-          <Input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask a question about Paul Graham's essays..."
-            disabled={isLoading}
-            className="flex-1"
-          />
-          <Button type="submit" disabled={isLoading} size="icon">
-            <Send className="h-4 w-4" />
-          </Button>
-        </div>
-      </form>
+      <div className="sticky bottom-0 bg-background border-t">
+        <form onSubmit={handleSubmit} className="p-2 sm:p-4">
+          <div className="flex space-x-2 sm:space-x-4">
+            <Input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Ask a question about Paul Graham's essays..."
+              disabled={isLoading}
+              className="flex-1"
+            />
+            <Button type="submit" disabled={isLoading} size="icon">
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 } 

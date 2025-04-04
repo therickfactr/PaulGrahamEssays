@@ -129,6 +129,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Acknowledgments
 
-- Paul Graham for his insightful essays
+- Paul Graham for his insightful [essays](https://www.paulgraham.com/articles.html)
 - OpenAI for the GPT-4 model
 - The open-source community for the amazing tools and libraries 
+- [Bluebook Accounting](https://getbluebook.com) for the challenge! The requirements are online at [Paul Graham Essay RAG-Stack](https://bluebook-accounting.notion.site/Paul-Graham-Essay-RAG-Stack-1ba39a6192708044aa47cffb944b64bf)
