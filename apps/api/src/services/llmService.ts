@@ -69,24 +69,6 @@ export async function generateResponse(query: string, documents: DocumentMatch[]
     const response = await llm.invoke(prompt);
     const answer = typeof response.content === 'string' ? response.content : JSON.stringify(response.content);
 
-    // const supabase = getSupabase();
-
-    // Store the interaction in Supabase
-    // const { error } = await supabase
-    //   .from('chat_interactions')
-    //   .insert({
-    //     query,
-    //     answer,
-    //     context: context,
-    //     document_ids: documents.map(doc => doc.metadata.id),
-    //     created_at: new Date().toISOString()
-    //   });
-
-    // if (error) {
-    //   console.error('Error storing chat interaction:', error);
-    //   // Don't throw the error as the response was still generated successfully
-    // }
-
     return answer;
   } catch (error) {
     console.error('Error generating response:', error);
