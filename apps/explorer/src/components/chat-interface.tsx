@@ -1,19 +1,19 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { Send, Loader2 } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
 import { Avatar } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import axios from 'axios';
+import { Check, Copy, Loader2, Send } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import type { Components } from 'react-markdown';
+import ReactMarkdown from 'react-markdown';
 import type { SyntaxHighlighterProps } from 'react-syntax-highlighter';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import remarkGfm from 'remark-gfm';
 
 interface CodeProps extends React.HTMLAttributes<HTMLElement> {
   node: any;
@@ -45,7 +45,9 @@ export function ChatInterface() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -97,6 +99,17 @@ export function ChatInterface() {
     } finally {
       setIsLoading(false);
       setProgress(100);
+      inputRef.current?.focus();
+    }
+  };
+
+  const handleCopy = async (content: string, messageId: string) => {
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopiedMessageId(messageId);
+      setTimeout(() => setCopiedMessageId(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
     }
   };
 
@@ -183,6 +196,22 @@ export function ChatInterface() {
                   </div>
                 </Avatar>
                 <div className="flex-1">
+                  {message.role === 'assistant' && (
+                    <div className="flex justify-end mb-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => handleCopy(message.content, message.id)}
+                      >
+                        {copiedMessageId === message.id ? (
+                          <Check className="h-4 w-4" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  )}
                   {renderMarkdown(message.content)}
                 </div>
               </div>
@@ -205,6 +234,7 @@ export function ChatInterface() {
         <form onSubmit={handleSubmit} className="p-2 sm:p-4">
           <div className="flex space-x-2 sm:space-x-4">
             <Input
+              ref={inputRef}
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -213,7 +243,7 @@ export function ChatInterface() {
               className="flex-1"
             />
             <Button type="submit" disabled={isLoading} size="icon">
-              <Send className="h-4 w-4" />
+              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             </Button>
           </div>
         </form>
