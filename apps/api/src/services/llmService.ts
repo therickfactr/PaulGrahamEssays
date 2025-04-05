@@ -60,7 +60,7 @@ export async function generateResponse(
 
     // Create a prompt that includes the relevant documents
     const context = uniqueDocuments
-      .map((doc: DocumentMatch) => `Essay Title: ${doc.metadata.title}\nEssay URL: ${doc.metadata.source}\nEssay Content: ${getEssayContent(doc.pageContent)}`)
+      .map((doc: DocumentMatch) => `Essay Title: ${doc.metadata.title}\nEssay URL: ${doc.metadata.source}\nEssay Content: ${getEssayContent(doc.metadata.source)}`)
       .join('\n\n');
 
     const essayList = uniqueDocuments
