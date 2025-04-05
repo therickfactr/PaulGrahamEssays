@@ -75,7 +75,7 @@ export function ChatInterface() {
 
     try {
       const response = await axios.post<ChatResponse>(new URL('api/documents/chat', process.env.NEXT_PUBLIC_API_URL).href, {
-        query: input, 
+        query: input,
         limit: 5,
       });
 
@@ -178,16 +178,14 @@ export function ChatInterface() {
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${
-              message.role === 'user' ? 'justify-end' : 'justify-start'
-            }`}
+            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'
+              }`}
           >
             <Card
-              className={`max-w-[90%] sm:max-w-[80%] p-2 sm:p-4 ${
-                message.role === 'user'
+              className={`max-w-[90%] sm:max-w-[80%] p-2 sm:p-4 ${message.role === 'user'
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-card text-card-foreground'
-              }`}
+                }`}
             >
               <div className="flex items-start space-x-2">
                 <Avatar>
@@ -250,4 +248,4 @@ export function ChatInterface() {
       </div>
     </div>
   );
-} // Test change
+}
