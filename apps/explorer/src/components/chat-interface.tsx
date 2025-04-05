@@ -250,4 +250,4 @@ export function ChatInterface() {
       </div>
     </div>
   );
-} 
+} // Test change
