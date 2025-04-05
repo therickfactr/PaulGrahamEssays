@@ -1,7 +1,9 @@
+import { Request } from 'express';
 import { DocumentMatch } from './document';
 
 export interface ChatRequest {
   query: string;
+  limit:  number;
 }
 
 export interface ChatResponse {

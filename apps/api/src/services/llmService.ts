@@ -40,36 +40,45 @@ const getEssayContent = async (url: string): Promise<string> => {
 
 export async function generateResponse(query: string, documents: DocumentMatch[]): Promise<string> {
   try {
-    console.log(JSON.stringify(documents, null, 2));
+    console.log('Query:', query);
+    console.log('Documents:', JSON.stringify(documents, null, 2));
     // Create a prompt that includes the relevant documents
     const context = documents
-      .map((doc: DocumentMatch) => `Title: ${doc.metadata.title}\nURL: ${doc.metadata.source}\nContent: ${getEssayContent(doc.metadata.source)}`)
+      .map((doc: DocumentMatch) => `Essay Title: ${doc.metadata.title}\nEssay URL: ${doc.metadata.source}\nEssay Content: ${getEssayContent(doc.pageContent)}`)
       .join('\n\n');
+
+    const essayList = documents
+      .map((doc: DocumentMatch) => `  * [${doc.metadata.title}](${doc.metadata.source})`)
+      .join('\n');
+    console.log('Context:', context);
 
     const prompt = `You are an AI assistant helping users explore Paul Graham's essays. 
     Use the following context from relevant essays to answer the user's question.
     If the context doesn't contain enough information to answer the question, say so.
 
-    Your answer should be in markdown in the following format:
-    Numbered Item 1 should be titled "Relevant Essay Links" and should include an indented bulletedlist of 
-    hyperlinked titles (e.g., [title](url)) for the relevant essays.
-    Numbered Item 2 should containe your answer. Please add numbered footnotes (e.g., [^1], [^2], [^3], etc.)
-    indicating references to specific essays from the list in Item 1. Define the footnotes
-    (e.g., [^1]: title of referenced essay) as a list at the end of your answer. 
-    answer with numbered footnotes to specific essays. 
+    Your answer should be in markdown as a series of paragraphs with the following content.
+
+    Begin with the level 2 heading "Answer".
+    
+    Beginning on the next line, provide your complete answer including footnote references 
+    (e.g., [^1], [^2], [^3], etc.) to specific essays in the context.
+
+    Finally, after a horizontal line, add the list of footnotes, each formatted as '[^1]: [title](url)'.
 
     Context:
     ${context}
-    
+
     Question: ${query}
-    
+
     Answer:`;
+
+    console.log('Prompt:', prompt);
 
     // Generate the response
     const response = await llm.invoke(prompt);
     const answer = typeof response.content === 'string' ? response.content : JSON.stringify(response.content);
 
-    return answer;
+    return `## Relevant Essays\n${essayList}\n${answer}\n`;
   } catch (error) {
     console.error('Error generating response:', error);
     throw error;
