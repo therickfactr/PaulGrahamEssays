@@ -46,6 +46,7 @@ export function ChatInterface() {
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -97,6 +98,7 @@ export function ChatInterface() {
     } finally {
       setIsLoading(false);
       setProgress(100);
+      inputRef.current?.focus();
     }
   };
 
@@ -205,6 +207,7 @@ export function ChatInterface() {
         <form onSubmit={handleSubmit} className="p-2 sm:p-4">
           <div className="flex space-x-2 sm:space-x-4">
             <Input
+              ref={inputRef}
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -213,7 +216,7 @@ export function ChatInterface() {
               className="flex-1"
             />
             <Button type="submit" disabled={isLoading} size="icon">
-              <Send className="h-4 w-4" />
+              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             </Button>
           </div>
         </form>
