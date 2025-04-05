@@ -16,7 +16,7 @@ load_dotenv()
 
 DOCUMENT_LIST_URL = environ.get("DOCUMENT_LIST_URL")
 if not DOCUMENT_LIST_URL:
-    raise ValueError("DOCUMENT_URL is not set")
+    raise ValueError("DOCUMENT_LIST_URL is not set")
 
 OPENAI_EMBEDDING_MODEL = environ.get("OPENAI_EMBEDDING_MODEL")
 if not OPENAI_EMBEDDING_MODEL:
