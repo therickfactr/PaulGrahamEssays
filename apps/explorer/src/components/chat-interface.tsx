@@ -1,19 +1,19 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { Send, Loader2, Copy, Check } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
 import { Avatar } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import axios from 'axios';
+import { Check, Copy, Loader2, Send } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import type { Components } from 'react-markdown';
+import ReactMarkdown from 'react-markdown';
 import type { SyntaxHighlighterProps } from 'react-syntax-highlighter';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import remarkGfm from 'remark-gfm';
 
 interface CodeProps extends React.HTMLAttributes<HTMLElement> {
   node: any;
