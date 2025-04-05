@@ -72,15 +72,16 @@ export async function generateResponse(
     Use the following context from relevant essays to answer the user's question.
     If the context doesn't contain enough information to answer the question, say so.
 
-    Your answer should be in markdown as a series of paragraphs with the following content.
+    If you don't have enough information to answer the question, say so.
+
+    If you do have enough information to answer the question, your answer should be 
+    limited to 200 words and should be formatted as markdown as a series of paragraphs 
+    with the following content.
 
     Begin with the level 2 heading "Answer".
     
-    Beginning on the next line, provide your answer including footnote references 
-    (e.g., [^1], [^2], [^3], etc.) to specific essays in the context. 
-    If you don't have enough information to answer the question, say so.
-    If you have enough information to answer the question, provide a summary of the answer
-    limited to 150 words.
+    Beginning on the next line, provide your answer including footnote references (e.g., [^1], 
+    [^2], [^3], etc.) to specific essays in the context. 
 
     Add the list of footnotes, each formatted as '[^1]: [title](url)'.
 
