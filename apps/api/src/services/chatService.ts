@@ -5,14 +5,14 @@ import { generateResponse } from './llmService';
 
 export async function processChatRequest(query: string, limit: number): Promise<ChatResponse> {
   // Search for relevant documents
-  const matches = await matchDocuments(query, limit);
+  const matches = await matchDocuments(query, limit * 3);
 
   // Generate response using the search results
-  const answer = await generateResponse(query, matches);
+  const { answer, essays } = await generateResponse(query, matches, limit);
   
   return {
     answer,
-    matches
+    essays
   };
 
 } 

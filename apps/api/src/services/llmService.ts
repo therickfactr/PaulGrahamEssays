@@ -38,19 +38,34 @@ const getEssayContent = async (url: string): Promise<string> => {
   return data?.[0]?.content ?? '';
 }
 
-export async function generateResponse(query: string, documents: DocumentMatch[]): Promise<string> {
+export async function generateResponse(
+  query: string, 
+  documents: DocumentMatch[], 
+  limit: number
+) : Promise<{ answer: string, essays: DocumentMatch[] }> {
   try {
-    console.log('Query:', query);
-    console.log('Documents:', JSON.stringify(documents, null, 2));
+    // Remove duplicate documents based on URL
+    const uniqueDocuments = documents.reduce((acc: DocumentMatch[], currentDoc) => {
+      const isDuplicate = acc.some(doc => doc.metadata.source === currentDoc.metadata.source);
+      if (!isDuplicate) {
+        acc.push(currentDoc);
+      }
+      return acc;
+    }, [])
+      .slice(0, limit);
+
+    // uniqueDocuments.forEach((doc, i) => {
+    //   console.log(`Unique Document ${i}: ${doc.metadata.source} - ${doc.metadata.title}`);
+    // });
+
     // Create a prompt that includes the relevant documents
-    const context = documents
-      .map((doc: DocumentMatch) => `Essay Title: ${doc.metadata.title}\nEssay URL: ${doc.metadata.source}\nEssay Content: ${getEssayContent(doc.pageContent)}`)
+    const context = uniqueDocuments
+      .map((doc: DocumentMatch) => `Essay Title: ${doc.metadata.title}\nEssay URL: ${doc.metadata.source}\nEssay Content: ${getEssayContent(doc.metadata.source)}`)
       .join('\n\n');
 
-    const essayList = documents
+    const essayList = uniqueDocuments
       .map((doc: DocumentMatch) => `  * [${doc.metadata.title}](${doc.metadata.source})`)
       .join('\n');
-    console.log('Context:', context);
 
     const prompt = `You are an AI assistant helping users explore Paul Graham's essays. 
     Use the following context from relevant essays to answer the user's question.
@@ -72,13 +87,15 @@ export async function generateResponse(query: string, documents: DocumentMatch[]
 
     Answer:`;
 
-    console.log('Prompt:', prompt);
 
     // Generate the response
     const response = await llm.invoke(prompt);
     const answer = typeof response.content === 'string' ? response.content : JSON.stringify(response.content);
 
-    return `## Relevant Essays\n${essayList}\n${answer}\n`;
+    return {
+      answer: `## Relevant Essays\n${essayList}\n${answer}\n`,
+      essays: uniqueDocuments
+    };
   } catch (error) {
     console.error('Error generating response:', error);
     throw error;

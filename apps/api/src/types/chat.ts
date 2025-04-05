@@ -8,5 +8,5 @@ export interface ChatRequest {
 
 export interface ChatResponse {
   answer: string;
-  matches: DocumentMatch[];
+  essays: DocumentMatch[];
 }
