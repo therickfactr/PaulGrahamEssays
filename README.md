@@ -42,25 +42,48 @@ A modern web application that allows users to explore and interact with Paul Gra
 │   ├── api/              # Express.js backend API
 │   │   ├── src/
 │   │   │   ├── routes/   # API endpoints
+│   │   │   │   ├── chat.ts        # Chat endpoints
+│   │   │   │   ├── document.ts    # Document CRUD and search
+│   │   │   │   └── health.ts      # Health check endpoint
 │   │   │   ├── services/ # Business logic
+│   │   │   │   ├── documentService.ts  # Document search and processing
+│   │   │   │   └── llmService.ts       # LLM integration and response generation
+│   │   │   ├── types/    # TypeScript interfaces
+│   │   │   │   ├── chat.ts       # Chat-related types
+│   │   │   │   └── document.ts   # Document-related types
 │   │   │   └── lib/      # Utilities and configurations
+│   │   │       ├── supabase.ts   # Supabase client setup
+│   │   │       └── vectorStore.ts # Vector store initialization
 │   │   └── package.json
 │   │
 │   └── explorer/         # Next.js frontend
 │       ├── src/
 │       │   ├── app/      # Next.js app router
+│       │   │   ├── layout.tsx     # Root layout
+│       │   │   └── page.tsx       # Main page
 │       │   ├── components/ # React components
+│       │   │   ├── chat-interface.tsx  # Chat UI component
+│       │   │   ├── ui/            # Reusable UI components
+│       │   │   └── ...            # Other components
 │       │   └── lib/      # Utilities
+│       │       └── api.ts         # API client configuration
 │       └── package.json
 │
 ├── loader/               # Python-based essay processing
 │   ├── src/
 │   │   ├── loaders/     # Essay loading scripts
+│   │   │   └── essay_loader.py    # Main essay loading script
 │   │   ├── processors/  # Text processing utilities
+│   │   │   └── text_processor.py  # Text cleaning and chunking
 │   │   └── utils/       # Helper functions
+│   │       └── supabase.py        # Supabase utilities
 │   └── requirements.txt
 │
-├── render.yaml           # Render.com deployment configuration
+├── supabase/            # Database migrations and functions
+│   ├── migrations/      # SQL migrations
+│   └── functions/       # Database functions
+│
+├── render.yaml          # Render.com deployment configuration
 └── package.json         # Root package.json for workspace
 ```
 
@@ -79,7 +102,7 @@ A modern web application that allows users to explore and interact with Paul Gra
 1. Clone the repository:
    ```bash
    git clone <repository-url>
-   cd paul-graham-essays
+   cd PaulGrahamEssays
    ```
 
 2. Install dependencies:
@@ -114,7 +137,7 @@ A modern web application that allows users to explore and interact with Paul Gra
    ```
 
 6. Access the applications:
-   - API: http://localhost:3001
+   - API: http://localhost:3081
    - Explorer: http://localhost:3000
 
 ## Data Processing
@@ -160,6 +183,19 @@ The project is configured for deployment on Render.com using the `render.yaml` f
 - `GET /api/documents/search` - Search essays
 - `POST /api/documents/chat` - Chat with the essay collection
 
+## Suggested Prompts
+
+Try these prompts to explore Paul Graham's essays:
+
+- [What is a good founder?](docs/GOODFOUNDER.md)
+- [What is an angel investor and what do they do?](docs/ANGELINVESTOR.md)
+- [What kinds of work are there?](docs/KINDSOFWORK.md)
+- [What is truth?](docs/TRUTH.md)
+- [What makes a person stubborn?](docs/STUBBORN.md)
+- [What is going on in Pittsburgh?](docs/PITTSBURGH.md)
+
+Each prompt link leads to an example response that demonstrates the system's capabilities.
+
 ## Contributing
 
 1. Fork the repository
@@ -177,4 +213,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Paul Graham for his insightful [essays](https://www.paulgraham.com/articles.html)
 - OpenAI for the GPT-4 model
 - The open-source community for the amazing tools and libraries 
-- [Bluebook Accounting](https://getbluebook.com) for the challenge! The requirements are online at [Paul Graham Essay RAG-Stack](https://bluebook-accounting.notion.site/Paul-Graham-Essay-RAG-Stack-1ba39a6192708044aa47cffb944b64bf)
+- [Bluebook Accounting](https://getbluebook.com) for the challenge! See [Requirements](./REQUIREMENTS.md)
