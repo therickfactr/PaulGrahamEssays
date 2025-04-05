@@ -1,4 +1,4 @@
-# Responsen Example for `What kinds of work are there?`
+# Response Example for `What kinds of work are there?`
 ## Relevant Essays
   * [How to Do Great Work](http://www.paulgraham.com/greatwork.html)
   * [How to Do What You Love](http://www.paulgraham.com/love.html)
