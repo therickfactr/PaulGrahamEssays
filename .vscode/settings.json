@@ -6,12 +6,10 @@
     "editor.fontLigatures": true,
     "editor.letterSpacing": 0.5,
     "editor.lineHeight": 1.6,
-    
     // Terminal font settings
     "terminal.integrated.fontFamily": "'Fira Code', 'Menlo', 'Monaco', 'Courier New', monospace",
     "terminal.integrated.fontSize": 14,
     "terminal.integrated.lineHeight": 1.6,
-    
     // Additional editor settings for better readability
     "editor.renderWhitespace": "selection",
     "editor.cursorBlinking": "smooth",
@@ -19,7 +17,6 @@
     "editor.smoothScrolling": true,
     "editor.bracketPairColorization.enabled": true,
     "editor.guides.bracketPairs": true,
-
     // Workbench editor settings
     "workbench.editor.tabSizing": "fixed",
     "workbench.editor.tabSizingFixedMinWidth": 100,
@@ -28,5 +25,15 @@
     "workbench.editor.highlightModifiedTabs": true,
     "workbench.editor.wrapTabs": false,
     "workbench.editor.decorations.badges": true,
-    "workbench.editor.decorations.colors": true
-} 
+    "workbench.editor.decorations.colors": true,
+    // Custom actions
+    "[javascript][typescript][typescriptreact]": { // <- THIS
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "vscode.typescript-language-features",
+        "editor.codeActionsOnSave": [
+            "source.addMissingImports",
+            "source.fixAll.eslint",
+            "source.organizeImports" // <- AND THIS
+        ]
+    }
+}
