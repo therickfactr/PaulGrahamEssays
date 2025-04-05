@@ -8,7 +8,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 3081
+        value: '3081'
       - key: OPENAI_API_KEY
         sync: false
       - key: OPENAI_EMBEDDING_MODEL
