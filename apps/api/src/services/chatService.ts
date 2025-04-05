@@ -1,4 +1,4 @@
-import { query, Request } from 'express';
+import { Request } from 'express';
 import { ChatRequest, ChatResponse } from '../types/chat';
 import { matchDocuments } from './documentService';
 import { generateResponse } from './llmService';
