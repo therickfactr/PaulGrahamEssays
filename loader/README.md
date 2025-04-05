@@ -42,7 +42,7 @@ A Python script that scrapes Paul Graham's essays from his website, processes th
 4. Create a `.env` file in the root directory with the following variables:
    ```
    DOCUMENT_LIST_URL=http://www.paulgraham.com/articles.html
-   OPENAI_MODEL=text-embedding-3-small
+   OPENAI_EMBEDDING_MODEL=text-embedding-3-small
    SUPABASE_URL=your_supabase_url
    SUPABASE_KEY=your_SUPABASE_KEY
    DOCUMENT_CHUNK_SIZE=1000
@@ -69,7 +69,7 @@ The script will:
 The following environment variables can be configured:
 
 - `DOCUMENT_LIST_URL`: URL of the page containing the list of essays
-- `OPENAI_MODEL`: OpenAI model to use for embeddings
+- `OPENAI_EMBEDDING_MODEL`: OpenAI model to use for embeddings
 - `SUPABASE_URL`: Your Supabase project URL
 - `SUPABASE_KEY`: Your Supabase service role key
 - `DOCUMENT_CHUNK_SIZE`: Size of each text chunk (default: 1000)

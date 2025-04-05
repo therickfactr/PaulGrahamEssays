@@ -1,26 +1,32 @@
 import { SupabaseVectorStore } from '@langchain/community/vectorstores/supabase';
 import { OpenAIEmbeddings } from '@langchain/openai';
-import { createClient } from '@supabase/supabase-js';
-
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_KEY) {
-  throw new Error('Missing Supabase credentials');
-}
+import getSupabase from './supabase';
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error('Missing OpenAI API key');
 }
 
-const supabaseClient = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
-);
-
-const embeddings = new OpenAIEmbeddings({
+const _embeddings = new OpenAIEmbeddings({
   openAIApiKey: process.env.OPENAI_API_KEY,
 });
 
-export const vectorStore = new SupabaseVectorStore(embeddings, {
-  client: supabaseClient,
-  tableName: 'documents',
-  queryName: 'match_documents',
-}); 
+let _vectorStore: SupabaseVectorStore | undefined;
+
+const getVectorStore = async () => {
+  if (!_vectorStore) {
+    _vectorStore = await new SupabaseVectorStore(
+      new OpenAIEmbeddings({
+        openAIApiKey: process.env.OPENAI_API_KEY,
+        modelName: process.env.OPENAI_EMBEDDINGS_MODEL || 'text-embedding-3-small',
+      }),
+      {
+        client: getSupabase(),
+        tableName: 'documents',
+        queryName: 'match_documents'
+      }
+    );
+  }
+  return _vectorStore;
+};
+
+export default getVectorStore;
