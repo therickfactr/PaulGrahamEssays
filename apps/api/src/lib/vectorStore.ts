@@ -10,10 +10,16 @@ let _vectorStore: SupabaseVectorStore | undefined;
 
 const getVectorStore = async () => {
   if (!_vectorStore) {
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error('Missing OpenAI API key');
+    }
+    if (!process.env.OPENAI_EMBEDDINGS_MODEL) {
+      throw new Error('Missing OpenAI embeddings model');
+    }
     _vectorStore = await new SupabaseVectorStore(
       new OpenAIEmbeddings({
         openAIApiKey: process.env.OPENAI_API_KEY,
-        modelName: process.env.OPENAI_EMBEDDINGS_MODEL || 'text-embedding-3-small',
+        modelName: process.env.OPENAI_EMBEDDINGS_MODEL,
       }),
       {
         client: getSupabase(),
