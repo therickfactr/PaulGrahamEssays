@@ -6,10 +6,6 @@ if (!process.env.OPENAI_API_KEY) {
   throw new Error('Missing OpenAI API key');
 }
 
-const _embeddings = new OpenAIEmbeddings({
-  openAIApiKey: process.env.OPENAI_API_KEY,
-});
-
 let _vectorStore: SupabaseVectorStore | undefined;
 
 const getVectorStore = async () => {
