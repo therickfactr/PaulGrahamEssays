@@ -10,16 +10,17 @@ import { Check, Copy, Loader2, Send } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import type { Components } from 'react-markdown';
 import ReactMarkdown from 'react-markdown';
-import type { SyntaxHighlighterProps } from 'react-syntax-highlighter';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import remarkGfm from 'remark-gfm';
 
-interface CodeProps extends React.HTMLAttributes<HTMLElement> {
-  node: any;
+type CodeComponent = Components['code'];
+
+interface CodeComponentProps {
   inline?: boolean;
   className?: string;
   children: React.ReactNode;
+  [key: string]: unknown;
 }
 
 interface Message {
@@ -31,7 +32,7 @@ interface Message {
 
 interface DocumentMatch {
   content: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, string>;
   score?: number;
 }
 
@@ -117,14 +118,14 @@ export function ChatInterface() {
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
-        code: (({ node, inline, className, children, ...props }: CodeProps) => {
+        code: (({ inline, className, children, ...props }: CodeComponentProps) => {
           const match = /language-(\w+)/.exec(className || '');
           return !inline && match ? (
             <SyntaxHighlighter
-              style={vscDarkPlus}
+              style={vscDarkPlus as { [key: string]: React.CSSProperties }}
               language={match[1]}
               PreTag="div"
-              {...(props as SyntaxHighlighterProps)}
+              {...props}
             >
               {String(children).replace(/\n$/, '')}
             </SyntaxHighlighter>
@@ -133,7 +134,8 @@ export function ChatInterface() {
               {children}
             </code>
           );
-        }) as Components['code'],
+        }) as CodeComponent,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         a: ({ node, ...props }) => (
           <a
             className="text-blue-500 hover:text-blue-700 underline"
@@ -142,27 +144,35 @@ export function ChatInterface() {
             {...props}
           />
         ),
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ul: ({ node, ...props }) => (
           <ul className="list-disc pl-4 my-2" {...props} />
         ),
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ol: ({ node, ...props }) => (
           <ol className="list-decimal pl-4 my-2" {...props} />
         ),
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         li: ({ node, ...props }) => (
           <li className="my-1" {...props} />
         ),
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         p: ({ node, ...props }) => (
           <p className="my-2" {...props} />
         ),
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         h1: ({ node, ...props }) => (
           <h1 className="text-2xl font-bold my-4" {...props} />
         ),
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         h2: ({ node, ...props }) => (
           <h2 className="text-xl font-bold my-3" {...props} />
         ),
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         h3: ({ node, ...props }) => (
           <h3 className="text-lg font-bold my-2" {...props} />
         ),
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         blockquote: ({ node, ...props }) => (
           <blockquote className="border-l-4 border-gray-300 pl-4 my-2 italic" {...props} />
         ),
@@ -183,8 +193,8 @@ export function ChatInterface() {
           >
             <Card
               className={`max-w-[90%] sm:max-w-[80%] p-2 sm:p-4 ${message.role === 'user'
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-card text-card-foreground'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-card text-card-foreground'
                 }`}
             >
               <div className="flex items-start space-x-2">
