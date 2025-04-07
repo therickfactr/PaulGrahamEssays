@@ -34,22 +34,6 @@ components:
           description: Summary of the document
           example: "This is a summary of the document"
           
-    DocumentFields:
-      type: object
-      properties:
-        content:
-          type: string
-          description: Content of the document
-          example: "This is the content of the document"
-        metadata:
-          type: object
-          $ref: '#/components/schemas/DocumentMetadata'
-          description: Metadata of the document
-          example: |-
-            { "source": "https://paulgraham.com/greatwork.html", "title": "Great Work", "language": "en", "author": "Paul Graham", "summary": "This is a summary of the document" }
-        required:
-          - content
-
     Document:
       type: object
       properties:
@@ -58,7 +42,7 @@ components:
           format: uuid
           description: ID of the document
           example: "123e4567-e89b-12d3-a456-426614174000"
-        content:
+        pageContent:
           type: string
           description: Content of the document
           example: "This is the content of the document"
@@ -86,12 +70,12 @@ components:
           description: Updated at date of the document
           example: "2021-01-01T00:00:00Z"
       required:
-        - content
+        - pageContent
 
     DocumentCreate:
       type: object
       properties:
-        content:
+        pageContent:
           type: string
           description: Content of the document
           example: "This is the content of the document"
@@ -147,24 +131,31 @@ components:
             $ref: '#/components/schemas/Document'
 
 paths:
-  /api/health:
+  /api/healthz:
     get:
       summary: Health check
       operationId: healthCheck
       responses:
         '200':
-          description: Health check response
+          description: Health check successful
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  message:
+                  status:
                     type: string
-                timestamp:
-                  type: string
-                  format: date-time
-      
+                    example: "ok"
+        '500':
+          description: Health check failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
   /api/documents:
     get:
       summary: List all documents

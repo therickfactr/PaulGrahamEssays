@@ -1,12 +1,11 @@
-import { Request } from 'express';
-import { DocumentMatch } from './document';
+import { DocumentMatchResponse } from './document';
 
 export interface ChatRequest {
   query: string;
-  limit:  number;
+  limit: number;
 }
 
 export interface ChatResponse {
   answer: string;
-  essays: DocumentMatch[];
+  essays: DocumentMatchResponse[];
 }

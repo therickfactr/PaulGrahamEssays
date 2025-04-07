@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import documentRouter from './documents';
-import healthRouter from './health';
+import documentsRouter from './documents';
+import healthzRouter from './healthz';
 
 const router = Router();
 
 // Health check route
-router.use('/health', healthRouter);
+router.use('/healthz', healthzRouter);
 // Document routes
-router.use('/documents', documentRouter);
+router.use('/documents', documentsRouter);
 
 export default router; 

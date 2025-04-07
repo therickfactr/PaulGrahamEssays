@@ -1,6 +1,6 @@
-import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import express from 'express';
 import routes from './routes';
 
 // Load environment variables
@@ -17,14 +17,14 @@ app.use(express.json());
 app.use('/api', routes);
 
 // Error handling middleware
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error(err.stack);
-  return res.status(500).json({ 
+  return res.status(500).json({
     error: 'Something went wrong!',
     details: err
   });
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.info(`Server is running on port ${port}`);
 }); 

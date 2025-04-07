@@ -3,11 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "yarn@1.22.22",
+  "engines": {
+    "node": ">=20.19.0 <=21.0.0"
+  },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only --rs --watch 'src/**/*.ts*, src/**/*.y*ml, .env' src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "generate-client": "openapi-generator-cli generate -i src/openapi.yaml -g typescript-axios -o ../web/src/api-client"
   },
   "dependencies": {
@@ -22,13 +28,17 @@
     "langchain": "0.3.19"
   },
   "devDependencies": {
+    "@jest/globals": "^29.7.0",
     "@openapitools/openapi-generator-cli": "^2.7.0",
     "@types/cors": "^2.8.0",
     "@types/express": "^4.17.0",
+    "@types/jest": "^29.5.12",
     "@types/node": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.0.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.0.0"
   }
