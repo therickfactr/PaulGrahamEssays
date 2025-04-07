@@ -4,7 +4,7 @@
   "private": true,
   "packageManager": "yarn@1.22.22",
   "engines": {
-    "node": ">=20.19.0 <21.0.0"
+    "node": ">=20 <21"
   },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only --rs --watch 'src/**/*.ts*, src/**/*.y*ml, .env' src/index.ts",
@@ -20,7 +20,6 @@
     "@langchain/community": "0.3.39",
     "@langchain/core": "^0.3.39",
     "@langchain/openai": "0.5.2",
-    "@paul-graham-essays/shared": "0.1.0",
     "@supabase/supabase-js": "^2.39.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
