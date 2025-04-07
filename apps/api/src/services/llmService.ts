@@ -1,6 +1,6 @@
 import { ChatOpenAI } from '@langchain/openai';
-import { DocumentMatch } from '../types/document';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { DocumentMatchResponse } from '../types';
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error('Missing OpenAI API key');
@@ -11,7 +11,7 @@ if (!process.env.SUPABASE_URL || !process.env.SUPABASE_KEY) {
 
 let supabase: SupabaseClient | undefined = undefined;
 
-const getSupabase = () => {
+const getSupabaseClient = () => {
   if (!supabase) {
     supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_KEY!);
   }
@@ -25,7 +25,7 @@ const llm = new ChatOpenAI({
 });
 
 const getEssayContent = async (url: string): Promise<string> => {
-  const client = getSupabase();
+  const client = getSupabaseClient();
   const { data, error } = await client
     .from('essays')
     .select('content')
@@ -39,13 +39,13 @@ const getEssayContent = async (url: string): Promise<string> => {
 }
 
 export async function generateResponse(
-  query: string, 
-  documents: DocumentMatch[], 
+  query: string,
+  documents: DocumentMatchResponse[],
   limit: number
-) : Promise<{ answer: string, essays: DocumentMatch[] }> {
+): Promise<{ answer: string, essays: DocumentMatchResponse[] }> {
   try {
     // Remove duplicate documents based on URL
-    const uniqueDocuments = documents.reduce((acc: DocumentMatch[], currentDoc) => {
+    const uniqueDocuments = documents.reduce((acc: DocumentMatchResponse[], currentDoc) => {
       const isDuplicate = acc.some(doc => doc.metadata.source === currentDoc.metadata.source);
       if (!isDuplicate) {
         acc.push(currentDoc);
@@ -61,11 +61,11 @@ export async function generateResponse(
     // Create a prompt that includes the relevant documents
     const context = uniqueDocuments
       .sort((a, b) => a.metadata.title.localeCompare(b.metadata.title))
-      .map((doc: DocumentMatch) => `Essay Title: ${doc.metadata.title}\nEssay URL: ${doc.metadata.source}\nEssay Content: ${getEssayContent(doc.metadata.source)}`)
+      .map((doc: DocumentMatchResponse) => `Essay Title: ${doc.metadata.title}\nEssay URL: ${doc.metadata.source}\nEssay Content: ${getEssayContent(doc.metadata.source)}`)
       .join('\n\n');
 
     const essayList = uniqueDocuments
-      .map((doc: DocumentMatch) => `  * [${doc.metadata.title}](${doc.metadata.source})`)
+      .map((doc: DocumentMatchResponse) => `  * [${doc.metadata.title}](${doc.metadata.source})`)
       .join('\n');
 
     const prompt = `You are an AI assistant helping users explore Paul Graham's essays. 

@@ -131,24 +131,31 @@ components:
             $ref: '#/components/schemas/Document'
 
 paths:
-  /api/health:
+  /api/healthz:
     get:
       summary: Health check
       operationId: healthCheck
       responses:
         '200':
-          description: Health check response
+          description: Health check successful
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  message:
+                  status:
                     type: string
-                timestamp:
-                  type: string
-                  format: date-time
-      
+                    example: "ok"
+        '500':
+          description: Health check failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
   /api/documents:
     get:
       summary: List all documents

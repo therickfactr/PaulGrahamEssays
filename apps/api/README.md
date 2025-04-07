@@ -23,17 +23,17 @@ yarn dev
 ## API Endpoints
 
 ### Health Check
-- `GET /health` - Check API health status
+- `GET /api/healthz` - Check API health status
 
 ### Documents
-- `GET /documents` - List all documents
-- `GET /documents/:id` - Get a specific document
-- `POST /documents` - Create a new document
-- `DELETE /documents/:id` - Delete a document
-- `POST /documents/match` - Find documents matching a query
+- `GET /api/documents` - List all documents
+- `GET /api/documents/:id` - Get a specific document
+- `POST /api/documents` - Create a new document
+- `DELETE /api/documents/:id` - Delete a document
+- `POST /api/documents/match` - Find documents matching a query
 
 ### Chat
-- `POST /chat` - Send a message to the chat endpoint
+- `POST /api/chat` - Send a message to the chat endpoint
 
 ## Unit Testing
 

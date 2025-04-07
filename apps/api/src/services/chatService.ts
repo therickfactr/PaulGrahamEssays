@@ -1,4 +1,4 @@
-import { ChatResponse } from '../types/chat';
+import { ChatResponse } from '../types';
 import { matchDocuments } from './documentService';
 import { generateResponse } from './llmService';
 

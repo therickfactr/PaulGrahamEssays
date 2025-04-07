@@ -1,4 +1,4 @@
-import { DocumentMatch } from './document';
+import { DocumentMatchResponse } from './document';
 
 export interface ChatRequest {
   query: string;
@@ -7,5 +7,5 @@ export interface ChatRequest {
 
 export interface ChatResponse {
   answer: string;
-  essays: DocumentMatch[];
+  essays: DocumentMatchResponse[];
 }

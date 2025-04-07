@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { Request, Response } from 'express';
-import { healthCheck } from '../controllers/healthController';
+import { healthz } from '../controllers/healthzController';
 
 describe('Health Controller', () => {
     let mockReq: Partial<Request>;
@@ -21,7 +21,7 @@ describe('Health Controller', () => {
     describe('healthCheck', () => {
         it('should return health status', async () => {
             mockReq = {};
-            await healthCheck(mockReq as Request, mockRes as unknown as Response);
+            await healthz(mockReq as Request, mockRes as unknown as Response);
 
             expect(mockStatus).toHaveBeenCalledWith(200);
             expect(mockJson).toHaveBeenCalledWith({

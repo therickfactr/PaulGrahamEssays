@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { healthCheck } from '../controllers/healthController';
+import { healthz } from '../controllers/healthzController';
 
 const router = Router();
 
 // Health check route
-router.get('/', healthCheck);
+router.get('/', healthz);
 
 export default router; 

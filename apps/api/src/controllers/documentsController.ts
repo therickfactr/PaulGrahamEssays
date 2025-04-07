@@ -1,15 +1,14 @@
+import { SupabaseVectorStore } from '@langchain/community/vectorstores/supabase';
 import type { Request, Response } from 'express';
-import getSupabase from '../lib/supabase';
-import getVectorStore from '../lib/vectorStore';
-
+import { getSupabaseClient, getSupabaseVectorStore } from '../lib';
 import type {
-  DocumentCreate,
-  MatchRequest,
+  DocumentCreateRequest,
+  DocumentMatchRequest
 } from '../types';
 
 export const listDocuments = async (_req: Request, res: Response) => {
   try {
-    const { data, error } = await getSupabase()
+    const { data, error } = await getSupabaseClient()
       .from('documents')
       .select('*')
       .order('created_at', { ascending: false });
@@ -25,37 +24,51 @@ export const listDocuments = async (_req: Request, res: Response) => {
   }
 };
 
-export const createDocument = async (req: Request<{}, {}, DocumentCreate>, res: Response) => {
-  try {
-    // Add to vector store
-    const vectorStore = await getVectorStore();
-    const [id] = await vectorStore.addDocuments([
-      {
-        pageContent: req.body.content,
-        metadata: req.body.metadata as Record<string, any>,
-      },
-    ]);
+export const createDocument = async (req: Request<{}, {}, DocumentCreateRequest>, res: Response) => {
+  let id: string;
+  let vectorStore: SupabaseVectorStore;
 
-    const { data, error } = await getSupabase()
+  try {
+    // get vector store
+    vectorStore = await getSupabaseVectorStore();
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Failed to get vector store',
+      details: error
+    });
+  }
+
+  try {
+    // add document to vector store
+    [id] = await vectorStore.addDocuments([req.body])
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Failed to add document to vector store',
+      details: error
+    });
+  }
+
+  try {
+    const { data, error } = await getSupabaseClient()
       .from('documents')
       .select('*')
       .eq('id', id)
-      .single();
-
     if (error) throw error;
-
-    return res.status(201).json(data);
+    if (!data || data.length === 0) {
+      throw new Error('Document not found');
+    }
+    return res.status(201).json(data[0]);
   } catch (error) {
     return res.status(500).json({
-      error: 'Failed to create document',
-      details: JSON.parse(JSON.stringify(error))
+      error: 'Failed to retrieve document (2)',
+      details: error
     });
   }
 };
 
 export const getDocument = async (req: Request<{ id: string }>, res: Response) => {
   try {
-    const { data, error } = await getSupabase()
+    const { data, error } = await getSupabaseClient()
       .from('documents')
       .select('*')
       .eq('id', req.params.id);
@@ -77,7 +90,7 @@ export const getDocument = async (req: Request<{ id: string }>, res: Response) =
 export const deleteDocument = async (req: Request<{ id: string }>, res: Response) => {
   try {
     // delete from vector store
-    const vectorStore = await getVectorStore();
+    const vectorStore = await getSupabaseVectorStore();
     await vectorStore.delete({ ids: [req.params.id] });
     return res.status(200).json({ id: req.params.id });
   } catch (error) {
@@ -88,10 +101,10 @@ export const deleteDocument = async (req: Request<{ id: string }>, res: Response
   }
 };
 
-export const matchDocuments = async (req: Request<{}, {}, MatchRequest>, res: Response) => {
+export const matchDocuments = async (req: Request<{}, {}, DocumentMatchRequest>, res: Response) => {
   try {
     const { query, limit = 5 } = req.body;
-    const vectorStore = await getVectorStore();
+    const vectorStore = await getSupabaseVectorStore();
     const results = await vectorStore.similaritySearch(query, limit);
     return res.json({ matches: results });
   } catch (error) {
