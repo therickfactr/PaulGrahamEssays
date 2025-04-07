@@ -18,9 +18,9 @@ DOCUMENT_LIST_URL = environ.get("DOCUMENT_LIST_URL")
 if not DOCUMENT_LIST_URL:
     raise ValueError("DOCUMENT_LIST_URL is not set")
 
-OPENAI_EMBEDDING_MODEL = environ.get("OPENAI_EMBEDDING_MODEL")
-if not OPENAI_EMBEDDING_MODEL:
-    raise ValueError("OPENAI_EMBEDDING_MODEL is not set")
+OPENAI_EMBEDDINGS_MODEL = environ.get("OPENAI_EMBEDDINGS_MODEL")
+if not OPENAI_EMBEDDINGS_MODEL:
+    raise ValueError("OPENAI_EMBEDDINGS_MODEL is not set")
 
 SUPABASE_URL = environ.get("SUPABASE_URL")
 if not SUPABASE_URL:
@@ -88,7 +88,7 @@ def store_documents(essays: List[Dict[(str, str)]] | Iterator[Dict[(str, str)]])
 
     try:
         # Initialize OpenAI embeddings
-        openai_model = OpenAIEmbeddings(model=OPENAI_EMBEDDING_MODEL)
+        openai_model = OpenAIEmbeddings(model=OPENAI_EMBEDDINGS_MODEL)
 
         # Initialize Supabase client
         supabase_client = create_client(SUPABASE_URL, SUPABASE_KEY)

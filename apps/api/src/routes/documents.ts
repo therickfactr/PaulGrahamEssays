@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { createDocument, deleteDocument, getDocument, listDocuments, matchDocuments } from "../controllers/documentController";
 import { chat } from "../controllers/chatController";
+import { createDocument, deleteDocument, getDocument, listDocuments, matchDocuments } from "../controllers/documentsController";
 
 const router = Router();
 
