@@ -26,5 +26,5 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.info(`Server is running on port ${port}`);
 }); 

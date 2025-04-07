@@ -54,14 +54,12 @@ export async function generateResponse(
     }, [])
       .slice(0, limit);
 
-    // uniqueDocuments.forEach((doc, i) => {
-    //   console.log(`Unique Document ${i}: ${doc.metadata.source} - ${doc.metadata.title}`);
-    // });
-
     // Create a prompt that includes the relevant documents
     const context = uniqueDocuments
-      .sort((a, b) => a.metadata.title.localeCompare(b.metadata.title))
-      .map((doc: DocumentMatchResponse) => `Essay Title: ${doc.metadata.title}\nEssay URL: ${doc.metadata.source}\nEssay Content: ${getEssayContent(doc.metadata.source)}`)
+      .sort((a, b) => a.metadata.title!.localeCompare(b.metadata.title!))
+      .map((doc: DocumentMatchResponse) =>
+        `Essay Title: ${doc.metadata.title}\nEssay URL: ${doc.metadata.source}\nEssay Content: ${getEssayContent(doc.metadata.source!)}`
+      )
       .join('\n\n');
 
     const essayList = uniqueDocuments
