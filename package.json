@@ -1,12 +1,13 @@
 {
   "name": "paul-graham-essays",
   "private": true,
+  "version": "0.1.0",
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
   "engines": {
-    "node": ">=20.19.0 <=21.0.0"
+    "node": ">=20.19.0 <21.0.0"
   },
   "scripts": {
     "build:shared": "yarn workspace @paul-graham-essays/shared build",

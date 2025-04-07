@@ -4,7 +4,7 @@
   "private": true,
   "packageManager": "yarn@1.22.22",
   "engines": {
-    "node": ">=20.19.0 <=21.0.0"
+    "node": ">=20.19.0 <21.0.0"
   },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only --rs --watch 'src/**/*.ts*, src/**/*.y*ml, .env' src/index.ts",
